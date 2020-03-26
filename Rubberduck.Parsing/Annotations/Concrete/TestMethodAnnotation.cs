@@ -1,8 +1,5 @@
-﻿using System;
-using Rubberduck.VBEditor;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Common;
 
 namespace Rubberduck.Parsing.Annotations
@@ -14,11 +11,11 @@ namespace Rubberduck.Parsing.Annotations
     {
         public TestMethodAnnotation()
             : base("TestMethod", AnnotationTarget.Member)
-        {  }
+        {}
 
         public IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments)
         {
-            var firstParameter = arguments.FirstOrDefault()?.UnQuote();
+            var firstParameter = arguments.FirstOrDefault();
             var result = new List<string>();
             if (!string.IsNullOrWhiteSpace(firstParameter))
             {
