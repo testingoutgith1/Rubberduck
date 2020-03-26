@@ -62,11 +62,11 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             : base(declarationFinderProvider, DeclarationType.ClassModule) 
         {}
 
-        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder) => IsInterfaceDeclaration(declaration) ? IsExcessiveCount((ClassModuleDeclaration)declaration) : false;
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder) => IsInterfaceDeclaration(declaration) ? HasExcessiveMembers((ClassModuleDeclaration)declaration) : false;
 
         private static bool IsInterfaceDeclaration(Declaration declaration) => declaration is ClassModuleDeclaration classModule ? classModule.IsInterface : false;
 
-        private static bool IsExcessiveCount(ClassModuleDeclaration declaration)
+        private static bool HasExcessiveMembers(ClassModuleDeclaration declaration)
         {
             var pub = declaration.Members.Where(member => { int acc = (int)member.Accessibility; return acc >= 3 && acc <= 5; }); //get rid of non-public members
             pub = pub.Where(member => !(member.DeclarationType == DeclarationType.Event)); //get rid of public member types that are not part of VBA interface
