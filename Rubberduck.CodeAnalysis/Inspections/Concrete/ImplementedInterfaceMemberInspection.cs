@@ -46,28 +46,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             : base(declarationFinderProvider, DeclarationType.ClassModule)
         {}
 
-        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
-        {
-            if (!IsInterfaceDeclaration(declaration))
-            {
-                return false;
-            }
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder) => IsInterfaceDeclaration(declaration) ? HasImplementedMembers(declaration, finder) : false;
 
+        private static bool IsInterfaceDeclaration(Declaration declaration) => declaration is ClassModuleDeclaration classModule ? classModule.IsInterface : false;
+
+        private bool HasImplementedMembers(Declaration declaration, DeclarationFinder finder) 
+        {  
             var moduleBodyElements = finder.Members(declaration, DeclarationType.Member)
                 .OfType<ModuleBodyElementDeclaration>();
 
             return moduleBodyElements
                 .Any(member => member.Block.ContainsExecutableStatements(true));
-        }
-
-        private static bool IsInterfaceDeclaration(Declaration declaration)
-        {
-            if (!(declaration is ClassModuleDeclaration classModule))
-            {
-                return false;
-            }
-            return classModule.IsInterface
-                || declaration.Annotations.Any(an => an.Annotation is InterfaceAnnotation);
         }
 
         protected override string ResultDescription(Declaration declaration)
